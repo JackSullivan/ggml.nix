@@ -1,0 +1,107 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1689068808,
+        "narHash": "sha256-6ixXo3wt24N/melDWjq70UuHQLxGV8jZvooRanIHXw0=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "919d646de7be200f3bf08cb76ae1f09402b6f9b4",
+        "type": "github"
+      },
+      "original": {
+        "id": "flake-utils",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1685573264,
+        "narHash": "sha256-Zffu01pONhs/pqH07cjlF10NnMDLok8ix5Uk4rhOnZQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "380be19fbd2d9079f677978361792cb25e8a3635",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1689618084,
+        "narHash": "sha256-5sbmh2vVYBU85WGnEEg20w1F0lCou+YWRF5JTAKHx0c=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "4a716c50feec750263bee793ceb571be536dff19",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs-unstable",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs",
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "src": "src",
+        "whisper-src": "whisper-src"
+      }
+    },
+    "src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1689357531,
+        "narHash": "sha256-wg/63ptnUmWnzEM41v1xCnDhgO7cfxQbXHFe11CTOJk=",
+        "owner": "ggerganov",
+        "repo": "ggml",
+        "rev": "d2b178ee747cfb0a0a1892da362d068080659170",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ggerganov",
+        "repo": "ggml",
+        "type": "github"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "whisper-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1689537634,
+        "narHash": "sha256-8GW01ITzGLAdSX3r3z02+jdPfoSN4y/IFjhN8906k2o=",
+        "owner": "ggerganov",
+        "repo": "whisper.cpp",
+        "rev": "39984657218588a26a413fff642b77c5d5232e51",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ggerganov",
+        "repo": "whisper.cpp",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
