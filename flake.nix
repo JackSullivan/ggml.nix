@@ -17,6 +17,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        lib = nixpkgs.lib;
         unstable = nixpkgs-unstable.legacyPackages.${system};
         py = unstable.python3.withPackages (ps:
           with ps; [
@@ -27,7 +28,9 @@
             torchaudio
             transformers
             sentencepiece
+            einops
           ]);
+        myLib = pkgs.callPackage ./lib.nix {};
         convert-hf-to-ggml-model = hf-model: pkgs.runCommand "ggml-model" {} ''
           mkdir -p $out/cache
           export TRANSFORMERS_CACHE=$out/cache
@@ -89,10 +92,36 @@
               cp bin/starcoder $out/bin/starcoder
             '';
           };
+          ggml-example = { cmake, cuda, target}:
+          pkgs.stdenv.mkDerivation {
+            name = "ggml";
+            inherit src;
+            nativeBuildInputs = [ cmake cuda.cuda_nvcc ];
+            buildInputs = [ cuda.libcublas cuda.cuda_cudart ];
+            CUDA_PATH = cuda.cudatoolkit;
+            cmakeFlags = [
+              "-DGGML_CUBLAS=ON"
+              #"-DCMAKE_CODE_COMPILER=${cuda.cuda_nvcc}/bin/nvcc"
+              "-DCUDAToolkit_ROOT=${cuda.cudatoolkit}"
+              #"-DCUDA_CUDART_LIBRARY=${cuda.cuda_cudart}/lib/libcudart.so"
+            ];
+            postBuild = ''
+              make ${target} ${target}-quantize
+              mkdir -p $out/bin
+              cp bin/${target} $out/bin/${target}
+            '';
+          };
 
       in {
         packages = {
+          inherit py;
           convert-model = convert-hf-to-ggml-model "bigcode/gpt_bigcode-santacoder";
+          replit-model = myLib.fetchHf { owner = "replit"; repo = "replit-code-v1-3b"; sha256 = "5zY3k2fP2JPMza1EsmAWrBX6N/qXGmKCtqZ/rJGF4/I="; };
+          replit-bin = ggml-example {
+            cmake = pkgs.cmake;
+            cuda = pkgs.cudaPackages;
+            target = "replit";
+          };
           whisper-small = (whisper-model {
             size = "small.en";
             sha256 = "xhONbVjsyDIgl+D5h8MvG+i7ChhTKj+I9zTRu/nEHl0=";
