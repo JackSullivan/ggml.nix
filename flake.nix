@@ -2,7 +2,7 @@
   description = "Basic flake for multisystem nixpkgs";
 
   inputs = {
-    src = {
+    ggml-src = {
       url = "github:ggerganov/ggml";
       flake = false;
     };
@@ -13,7 +13,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils, src, whisper-src }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils, ggml-src, whisper-src }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -34,7 +34,7 @@
         convert-hf-to-ggml-model = hf-model: pkgs.runCommand "ggml-model" {} ''
           mkdir -p $out/cache
           export TRANSFORMERS_CACHE=$out/cache
-          ${py}/bin/python ${src}/examples/starcoder/convert-hf-to-ggml.py ${hf-model} --outfile $out/ggml-model.bin 
+          ${py}/bin/python ${ggml-src}/examples/starcoder/convert-hf-to-ggml.py ${hf-model} --outfile $out/ggml-model.bin 
         '';
         whisper-model = { size, sha256 }:
           pkgs.fetchurl {
@@ -76,7 +76,7 @@
         ggml = { cmake, cuda }:
           pkgs.stdenv.mkDerivation {
             name = "ggml";
-            inherit src;
+            src = ggml-src;
             nativeBuildInputs = [ cmake cuda.cuda_nvcc ];
             buildInputs = [ cuda.libcublas cuda.cuda_cudart ];
             CUDA_PATH = cuda.cudatoolkit;
@@ -95,7 +95,7 @@
           ggml-example = { cmake, cuda, target}:
           pkgs.stdenv.mkDerivation {
             name = "ggml";
-            inherit src;
+            src = ggml-src;
             nativeBuildInputs = [ cmake cuda.cuda_nvcc ];
             buildInputs = [ cuda.libcublas cuda.cuda_cudart ];
             CUDA_PATH = cuda.cudatoolkit;
@@ -114,7 +114,7 @@
 
       in {
         packages = {
-          inherit py;
+          inherit py voice-stream;
           convert-model = convert-hf-to-ggml-model "bigcode/gpt_bigcode-santacoder";
           replit-model = myLib.fetchHf { owner = "replit"; repo = "replit-code-v1-3b"; sha256 = "5zY3k2fP2JPMza1EsmAWrBX6N/qXGmKCtqZ/rJGF4/I="; };
           replit-bin = ggml-example {
@@ -126,13 +126,14 @@
             size = "small.en";
             sha256 = "xhONbVjsyDIgl+D5h8MvG+i7ChhTKj+I9zTRu/nEHl0=";
           });
-          whisper = (whisper { cuda = pkgs.cudaPackages; });
+          whisper = pkgs.callPackage myLib.whisper { src=whisper-src; };
           python = py;
           ggml = (ggml {
             cmake = pkgs.cmake;
             cuda = pkgs.cudaPackages;
           });
-          default = voice-stream;
+          #default = voice-stream;
+          default = pkgs.callPackage myLib.ggml {src=ggml-src; targets = ["starcoder" "replit"];};
         };
       });
 }
