@@ -88,11 +88,11 @@
     "whisper-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1689537634,
-        "narHash": "sha256-8GW01ITzGLAdSX3r3z02+jdPfoSN4y/IFjhN8906k2o=",
+        "lastModified": 1690301757,
+        "narHash": "sha256-iQfOxIyuNqckFNC+cinF/dgW1dQGlBGjE9t4ZCpN97k=",
         "owner": "ggerganov",
         "repo": "whisper.cpp",
-        "rev": "39984657218588a26a413fff642b77c5d5232e51",
+        "rev": "a32c4aa4823b42928e30df6314f31641d7b3f374",
         "type": "github"
       },
       "original": {

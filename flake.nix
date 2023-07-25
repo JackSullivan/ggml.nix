@@ -49,9 +49,13 @@
             size = "small.en";
             sha256 = "xhONbVjsyDIgl+D5h8MvG+i7ChhTKj+I9zTRu/nEHl0=";
           });
+          whisper-medium = (whisper-model {
+            size = "medium.en";
+            sha256 = "xhONbVjsyDIgl+D5h8MvG+i7ChhTKj+I9zTRu/nEHl0=";
+          });
         voiceCommand = let
           whisp = pkgs.callPackage myLib.whisper { src = whisper-src; };
-          model = whisper-small;
+          model = whisper-medium;
         in pkgs.symlinkJoin {
           name = "whisper-commands";
           paths = map (comm:
@@ -63,6 +67,10 @@
       in {
         packages = {
           inherit py voiceCommand;
+          whisperVim = pkgs.runCommand "whisper.vim" {} ''
+            mkdir $out
+            ln -s ${whisper-src}/examples/whisper.nvim/whisper.vim $out/whisper.vim
+          '';
           convert-model =
             convert-hf-to-ggml-model "bigcode/gpt_bigcode-santacoder";
           replit-model = myLib.fetchHf {
